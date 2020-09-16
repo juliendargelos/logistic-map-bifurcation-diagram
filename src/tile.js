@@ -15,18 +15,7 @@ exports.handler = async (event, context) => {
   x = parseInt(x, 10) * range
   y = parseInt(y, 10) * range
 
-  const image = new PNG({
-    width,
-    height,
-    colorType: 2,
-    inputHasAlpha: false,
-    bgColor: {
-      red: backgroundColor[0],
-      green: backgroundColor[1],
-      blue: backgroundColor[2]
-    }
-  })
-
+  const image = new PNG({ width, height })
   const data = image.data
   const histogram = new Array(width * height)
 
@@ -64,10 +53,9 @@ exports.handler = async (event, context) => {
   const smoothing = 0
 
   histogram.forEach((value, i) => {
-    // i *= 4
-    i *= 3
+    i *= 4
 
-    // data[i + 3] = 255
+    data[i + 3] = 255
 
     if (value) {
       value /= maximum
@@ -80,7 +68,7 @@ exports.handler = async (event, context) => {
       data[i + 1] = Math.round(value * maximumColor[1] + (1 - value) * minimumColor[1])
       data[i + 2] = Math.round(value * maximumColor[2] + (1 - value) * minimumColor[2])
     } else {
-      // data.set(backgroundColor, i)
+      data.set(backgroundColor, i)
     }
   })
 

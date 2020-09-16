@@ -12,7 +12,7 @@ exports.handler = async (event, context) => {
   let { x = '0', y = '0', z = '1' } = event.queryStringParameters
   const range = 1 / parseInt(z, 10)
 
-  x = parseInt(x, 10) * range
+  x = parseInt(x, 10) * range / 4
   y = parseInt(y, 10) * range
 
   const image = new PNG({ width, height })

@@ -75,7 +75,7 @@ exports.handler = async (event, context, callback) => {
   const chunks = []
 
   image.on('data', chunk => chunks.push(chunk))
-  image.on('end', () => callback({
+  image.on('end', () => callback(null, {
     statusCode: 200,
     isBase64Encoded: true,
     headers: { 'content-type': 'image/png' },

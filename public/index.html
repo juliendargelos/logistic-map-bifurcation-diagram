@@ -12,6 +12,7 @@
   <body>
     <main></main>
     <script src="https://unpkg.com/leaflet@1.7.1"></script>
+    <script src="https://unpkg.com/leaflet-edgebuffer@1.0.6"></script>
     <script>
       L.map(document.querySelector('main'), {
         crs: L.CRS.Simple,
@@ -19,8 +20,8 @@
         zoom: 1,
         // maxBounds: [[0, 0], [4, 1]],
         keepBuffer: 10,
-        updateInterval: 100,
         updateWhenIdle: false,
+        edgeBufferTiles: 5,
         layers: [
           L.tileLayer('https://logistic-map-bifurcation-diagram.netlify.app/.netlify/functions/tile?x={x}&y={y}&z={z}', {
             zoomOffset: 1,

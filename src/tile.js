@@ -10,9 +10,10 @@ const backgroundColor = [0, 0, 0]
 
 exports.handler = async (event, context) => {
   let { x = '0', y = '0', z = '1' } = event.queryStringParameters
-  const range = 1 / parseInt(z, 10)
+  z = parseInt(z, 10)
+  const range = 1 / z
 
-  x = parseInt(x, 10) * range
+  x = parseInt(x, 10) * range * (z !== 1 && z % 2 === 1 ? 2 : 1)
   y = parseInt(y, 10) * range
 
   const image = new PNG({ width, height })

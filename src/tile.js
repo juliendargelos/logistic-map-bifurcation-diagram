@@ -10,7 +10,7 @@ const backgroundColor = [0, 0, 0]
 
 exports.handler = async (event, context) => {
   let { x = '0', y = '0', z = '1' } = event.queryStringParameters
-  const range = width / parseInt(z, 10)
+  const range = parseInt(z, 10) * width
 
   x = parseInt(x, 10) * range
   y = parseInt(y, 10) * range

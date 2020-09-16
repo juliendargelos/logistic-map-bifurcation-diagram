@@ -1,6 +1,6 @@
 const { PNG } = require('pngjs')
 
-const iterations = 2000
+const iterations = 10
 const start = 0.25
 const width = 256
 const height = 256
@@ -8,10 +8,10 @@ const minimumColor = [255, 0, 255]
 const maximumColor = [0, 0, 255]
 const backgroundColor = [0, 0, 0]
 
-exports.handler = async (event, context) => {
-  let { x = '0', y = '0', z = '0' } = event.queryStringParameters
+exports.handler = async ({ queryStringParameters }) => {
+  let { x = '0', y = '0', z = '0' } = queryStringParameters
   const range = 1 / Math.pow(2, parseInt(z, 10))
-  const scaledIterations = 1 / range * iterations
+  const scaledIterations = iterations / range
 
   x = parseInt(x, 10) * range
   y = parseInt(y, 10) * range
@@ -44,12 +44,16 @@ exports.handler = async (event, context) => {
       }
 
       values.forEach((value, l) => {
-        histogram[i + l * width] = Math.min(80, value) * Math.min(f, 80)
+        histogram[i + l * width] = Math.log(value + 1) * f
       })
     }
   }
 
-  const smoothing = 2
+  const maximum = histogram.reduce((maximum, value) => (
+    Math.max(value, maximum)
+  ), 0)
+
+  const smoothing = 0
 
   histogram.forEach((value, i) => {
     i *= 4
@@ -57,7 +61,7 @@ exports.handler = async (event, context) => {
     data[i + 3] = 255
 
     if (value) {
-      value /= scaledIterations
+      value /= maximum
 
       for (var s = 0; s < smoothing; s++) {
         value = Math.min(1, -Math.log((1 - value) * 0.9 + 0.1))

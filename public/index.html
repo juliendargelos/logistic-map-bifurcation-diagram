@@ -17,18 +17,14 @@
       L.map(document.querySelector('main'), {
         attributionControl: false,
         crs: L.CRS.Simple,
-        center: [1, 1],
-        zoom: 1,
+        center: [2, 2],
+        zoom: 2,
         zoomSnap: 0,
         // maxBounds: [[0, 0], [4, 1]],
         keepBuffer: 10,
         updateWhenIdle: false,
         edgeBufferTiles: 5,
-        layers: [
-          L.tileLayer('https://logistic-map-bifurcation-diagram.netlify.app/.netlify/functions/tile?x={x}&y={y}&z={z}', {
-            tileSize: 256
-          })
-        ]
+        layers: [L.tileLayer('.netlify/functions/tile?x={x}&y={y}&z={z}')]
       })
     </script>
   </body>

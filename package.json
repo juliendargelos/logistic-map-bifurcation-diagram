@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "start": "node server.js"
   },
   "dependencies": {
     "pngjs": "^5.0.0"
@@ -9,6 +10,7 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^15.0.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
-    "rollup": "^2.27.0"
+    "rollup": "^2.27.0",
+    "serve-handler": "^6.1.3"
   }
 }

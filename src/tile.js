@@ -8,7 +8,7 @@ const minimumColor = [255, 0, 255]
 const maximumColor = [0, 0, 255]
 const backgroundColor = [0, 0, 0]
 
-exports.handler = async (event, context, callback) => {
+exports.handler = async (event, context) => {
   let { x = '0', y = '0', z = '1' } = event.queryStringParameters
   const range = 1 / parseInt(z, 10)
 
@@ -72,15 +72,17 @@ exports.handler = async (event, context, callback) => {
     }
   })
 
-  const chunks = []
+  return new Promise((resolve) => {
+    const chunks = []
 
-  image.on('data', chunk => chunks.push(chunk))
-  image.on('end', () => callback(null, {
-    statusCode: 200,
-    isBase64Encoded: true,
-    headers: { 'content-type': 'image/png' },
-    body: Buffer.concat(chunks).toString('base64')
-  }))
+    image.on('data', chunk => chunks.push(chunk))
+    image.on('end', () => resolve(null, {
+      statusCode: 200,
+      isBase64Encoded: true,
+      headers: { 'content-type': 'image/png' },
+      body: Buffer.concat(chunks).toString('base64')
+    }))
 
-  image.pack()
+    image.pack()
+  })
 }

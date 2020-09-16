@@ -11,12 +11,12 @@
       L.map(document.querySelector('main'), {
         crs: L.CRS.Simple,
         layers: [
-          new L.TileLayer.extend({
+          new (L.TileLayer.extend({
             getTileUrl: function(coords) {
               console.log(coords)
               return 'https://static.mmzstatic.com/wp-content/uploads/2017/04/philippe-poutou-presidentielle-2017.jpg'
             }
-          })
+          }))()
         ]
       })
     </script>

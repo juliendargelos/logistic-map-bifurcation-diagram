@@ -30,7 +30,7 @@ exports.handler = async (event, context) => {
   const data = image.data
   const histogram = new Array(width * height)
 
-  let i, j, k, v
+  let i, j, k, v, f
 
   for (i = 0; i < width; i++) {
     const rate = i / (width - 1) * range + x

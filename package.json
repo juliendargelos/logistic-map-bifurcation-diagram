@@ -1,6 +1,14 @@
 {
   "private": true,
+  "scripts": {
+    "build": "rollup -c"
+  },
   "dependencies": {
     "pngjs": "^5.0.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^15.0.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "rollup": "^2.27.0"
   }
 }

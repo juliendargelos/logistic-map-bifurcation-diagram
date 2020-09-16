@@ -86,7 +86,8 @@ exports.handler = async (event, context) => {
 
   return {
     statusCode: 200,
+    isBase64Encoded: true,
     headers: { 'content-type': 'image/png' },
-    body: PNG.sync.write(image)
+    body: PNG.sync.write(image).toString('base64')
   }
 }

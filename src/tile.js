@@ -25,7 +25,7 @@ exports.handler = async (event, context) => {
     let i, j, k, v, f, h
 
     for (i = 0; i < width; i++) {
-      const rate = (i / (width - 1) * range + x - 0.5) * 4
+      const rate = (i / (width - 1) * range + x) * 4
       const values = new Array(height).fill(0)
 
       for (j = 0, v = start; j < 1000; j++) {

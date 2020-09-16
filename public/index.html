@@ -18,6 +18,9 @@
         center: [2, 0.5],
         zoom: 1,
         // maxBounds: [[0, 0], [4, 1]],
+        keepBuffer: 10,
+        updateInterval: 100,
+        updateWhenIdle: false,
         layers: [
           L.tileLayer('https://logistic-map-bifurcation-diagram.netlify.app/.netlify/functions/tile?x={x}&y={y}&z={z}', {
             zoomOffset: 1,

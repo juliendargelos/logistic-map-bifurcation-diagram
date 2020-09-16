@@ -20,36 +20,38 @@ exports.handler = async (event, context) => {
   const data = image.data
   const histogram = new Array(width * height)
 
-  let i, j, k, v, f, h
+  if (x >= 0 && x <= 1 && y <= 0 && y <= 1) {
+    let i, j, k, v, f, h
 
-  for (i = 0; i < width; i++) {
-    const rate = (i / (width - 1) * range + x) * 7 + 3
-    const values = new Array(height).fill(0)
+    for (i = 0; i < width; i++) {
+      const rate = (i / (width - 1) * range + x) * 4
+      const values = new Array(height).fill(0)
 
-    for (j = 0, v = start; j < 1000; j++) {
-      v = v * rate * (1 - v)
-    }
-
-    for (j = 0, f = 0; j < iterations; j++) {
-      v = v * rate * (1 - v)
-      k = 1 - v
-
-      if (k >= y && k <= y + range) {
-        k = Math.round((k - y) / range * (height - 1))
-        h = values[k]
-        values[k] = h + 1
-        if (!h) f++
+      for (j = 0, v = start; j < 1000; j++) {
+        v = v * rate * (1 - v)
       }
+
+      for (j = 0, f = 0; j < iterations; j++) {
+        v = v * rate * (1 - v)
+        k = 1 - v
+
+        if (k >= y && k <= y + range) {
+          k = Math.round((k - y) / range * (height - 1))
+          h = values[k]
+          values[k] = h + 1
+          if (!h) f++
+        }
+      }
+
+      values.forEach((value, l) => {
+        histogram[i + l * width] = Math.min(80, value) * Math.min(f, 80)
+      })
     }
 
-    values.forEach((value, l) => {
-      histogram[i + l * width] = Math.min(80, value) * Math.min(f, 80)
-    })
+    const maximum = histogram.reduce((maximum, value) => (
+      Math.max(value, maximum)
+    ), 0)
   }
-
-  const maximum = histogram.reduce((maximum, value) => (
-    Math.max(value, maximum)
-  ), 0)
 
   const smoothing = 0
 

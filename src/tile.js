@@ -10,6 +10,7 @@ const backgroundColor = [0, 0, 0]
 
 exports.handler = async (event, context) => {
   let { x = '0', y = '0', z = '1' } = event.queryStringParameters
+  let maximum = 1
   z = Math.pow(parseInt(z, 10), 2)
   const range = 1 / z
 
@@ -48,7 +49,7 @@ exports.handler = async (event, context) => {
       })
     }
 
-    const maximum = histogram.reduce((maximum, value) => (
+    maximum = histogram.reduce((maximum, value) => (
       Math.max(value, maximum)
     ), 0)
   }

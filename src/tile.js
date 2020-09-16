@@ -9,13 +9,12 @@ const maximumColor = [0, 0, 255]
 const backgroundColor = [0, 0, 0]
 
 exports.handler = async (event, context) => {
-  let { x = '0', y = '0', z = '1' } = event.queryStringParameters
+  let { x = '0', y = '0', z = '0' } = event.queryStringParameters
   let maximum = 1
-  z = parseInt(z, 10)
-  const range = 1 / z
+  const range = 1 / Math.pow(2, parseInt(z, 10))
 
-  x = parseInt(x, 10) / z
-  y = parseInt(y, 10) / z
+  x = parseInt(x, 10) * range
+  y = parseInt(y, 10) * range
 
   const image = new PNG({ width, height })
   const data = image.data

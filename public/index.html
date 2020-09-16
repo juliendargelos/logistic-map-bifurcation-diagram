@@ -13,12 +13,11 @@
     <main></main>
     <script src="https://unpkg.com/leaflet@1.7.1"></script>
     <script>
-      L.map(document.querySelector('main'), {
-        crs: L.CRS.Simple,
-        layers: [
-          L.tileLayer('https://static.mmzstatic.com/wp-content/uploads/2017/04/philippe-poutou-presidentielle-2017.jpg?x={x}&y={y}&z={z}')
-        ]
+      const map = L.map(document.querySelector('main'), {
+        crs: L.CRS.Simple
       })
+      
+      L.tileLayer('https://static.mmzstatic.com/wp-content/uploads/2017/04/philippe-poutou-presidentielle-2017.jpg?x={x}&y={y}&z={z}').addTo(map)
     </script>
   </body>
 </html>

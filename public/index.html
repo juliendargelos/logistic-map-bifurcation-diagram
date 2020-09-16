@@ -19,7 +19,10 @@
         zoom: 1,
         maxBounds: [[0, 0], [4, 1]],
         layers: [
-          L.tileLayer('https://static.mmzstatic.com/wp-content/uploads/2017/04/philippe-poutou-presidentielle-2017.jpg?x={x}&y={y}&z={z}')
+          L.tileLayer('https://logistic-map-bifurcation-diagram.netlify.app/.netlify/functions/tile?x={x}&y={y}&z={z}', {
+            zoomOffset: 1,
+            tileSize: 256
+          })
         ]
       })
     </script>

@@ -1,8 +1,92 @@
+const { PNG } = require('pngjs')
+
+const iterations = 100//50000
+const start = 0.25
+const width = 256
+const height = 256
+const minimumColor = [255, 0, 255]
+const maximumColor = [0, 0, 255]
+const backgroundColor = [0, 0, 0]
+
 exports.handler = async (event, context) => {
-  const {x = '', y = '', z = ''} = event.queryStringParameters
+  const { x = '0', y = '0', z = '1' } = event.queryStringParameters
+  const range = 1 / parseInt(z, 10)
+
+  x = parseInt(x, 10) * range
+  y = parseInt(y, 10) * range
+
+  const image = new PNG({
+    width,
+    height,
+    colorType: 2,
+    inputHasAlpha: false,
+    bgColor: {
+      red: backgroundColor[0],
+      green: backgroundColor[1],
+      blue: backgroundColor[2]
+    }
+  })
+
+  const data = image.data
+  const histogram = new Array(width * height)
+
+  let i, j, k, v
+
+  for (i = 0; i < width; i++) {
+    const rate = i / (width - 1) * range + x
+    const values = new Array(height).fill(0)
+
+    for (j = 0, v = start; j < 1000; j++) {
+      v = v * rate * (1 - v)
+    }
+
+    for (j = 0, f = 0; j < iterations; j++) {
+      v = v * rate * (1 - v)
+      k = 1 - v
+
+      if (k >= y && k <= y + range) {
+        k = Math.round((k - y) / range * (height - 1))
+        h = values[k]
+        values[k] = h + 1
+        if (!h) f++
+      }
+    }
+
+    values.forEach((value, l) => {
+      histogram[i + l * width] = Math.min(80, value) * Math.min(f, 80)
+    })
+  }
+
+  const maximum = histogram.reduce((maximum, value) => (
+    Math.max(value, maximum)
+  ), 0)
+
+  const smoothing = 0
+
+  histogram.forEach((value, i) => {
+    // i *= 4
+    i *= 3
+
+    // data[i + 3] = 255
+
+    if (value) {
+      value /= maximum
+
+      for (var s = 0; s < smoothing; s++) {
+        value = Math.min(1, -Math.log((1 - value) * 0.9 + 0.1))
+      }
+
+      data[i    ] = Math.round(value * maximumColor[0] + (1 - value) * minimumColor[0])
+      data[i + 1] = Math.round(value * maximumColor[1] + (1 - value) * minimumColor[1])
+      data[i + 2] = Math.round(value * maximumColor[2] + (1 - value) * minimumColor[2])
+    } else {
+      // data.set(backgroundColor, i)
+    }
+  })
 
   return {
     statusCode: 200,
-    body: `${x},${y},${z}`
+    headers: { 'content-type': 'image/png' },
+    body: PNG.sync.write(image)
   }
 }

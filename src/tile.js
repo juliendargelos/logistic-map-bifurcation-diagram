@@ -13,7 +13,7 @@ exports.handler = async (event, context) => {
   z = Math.pow(parseInt(z, 10), 2)
   const range = 1 / z
 
-  x = (parseInt(x, 10) + (z > 2 ? 4 : 0)) * range
+  x = (parseInt(x, 10) + z) * range
   y = parseInt(y, 10) * range
 
   const image = new PNG({ width, height })

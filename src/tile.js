@@ -1,6 +1,6 @@
 const { PNG } = require('pngjs')
 
-const iterations = 50000
+const iterations = 5000
 const start = 0.25
 const width = 256
 const height = 256
@@ -12,7 +12,7 @@ exports.handler = async (event, context) => {
   let { x = '0', y = '0', z = '0' } = event.queryStringParameters
   let maximum = 1
   const range = 1 / Math.pow(2, parseInt(z, 10))
-  const scaledIterations = 1 / range* iterations
+  const scaledIterations = 1 / range * iterations
 
   x = parseInt(x, 10) * range
   y = parseInt(y, 10) * range
@@ -54,7 +54,7 @@ exports.handler = async (event, context) => {
     ), 0)
   }
 
-  const smoothing = 0
+  const smoothing = 2
 
   histogram.forEach((value, i) => {
     i *= 4

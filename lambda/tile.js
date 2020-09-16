@@ -1,4 +1,4 @@
-const { PNG } = require('./node_modules/pngjs')
+const { PNG } = require('pngjs')
 
 const iterations = 100//50000
 const start = 0.25

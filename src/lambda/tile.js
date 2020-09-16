@@ -2,8 +2,8 @@ const { PNG } = require('pngjs')
 
 const iterations = 10
 const start = 0.25
-const width = 256
-const height = 256
+const width = 512
+const height = 512
 const minimumColor = [255, 0, 255]
 const maximumColor = [0, 0, 255]
 const backgroundColor = [0, 0, 0]

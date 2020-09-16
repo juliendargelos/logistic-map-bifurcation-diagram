@@ -14,8 +14,8 @@ exports.handler = async (event, context) => {
   z = parseInt(z, 10)
   const range = 1 / z
 
-  x = parseInt(x, 10) * range
-  y = parseInt(y, 10) * range
+  x = parseInt(x, 10) / z
+  y = parseInt(y, 10) / z
 
   const image = new PNG({ width, height })
   const data = image.data

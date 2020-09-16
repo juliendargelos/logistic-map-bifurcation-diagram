@@ -1,6 +1,6 @@
 const { PNG } = require('pngjs')
 
-const iterations = 100//50000
+const iterations = 50000
 const start = 0.25
 const width = 256
 const height = 256
@@ -12,6 +12,7 @@ exports.handler = async (event, context) => {
   let { x = '0', y = '0', z = '0' } = event.queryStringParameters
   let maximum = 1
   const range = 1 / Math.pow(2, parseInt(z, 10))
+  const scaledIterations = 1 / range* iterations
 
   x = parseInt(x, 10) * range
   y = parseInt(y, 10) * range
@@ -31,7 +32,7 @@ exports.handler = async (event, context) => {
         v = v * rate * (1 - v)
       }
 
-      for (j = 0, f = 0; j < iterations; j++) {
+      for (j = 0, f = 0; j < scaledIterations; j++) {
         v = v * rate * (1 - v)
         k = 1 - v
 

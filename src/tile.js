@@ -18,9 +18,9 @@ exports.handler = async (event, context) => {
 
   const image = new PNG({ width, height })
   const data = image.data
-  const histogram = new Array(width * height)
+  const histogram = new Array(width * height).fill(0)
 
-  if (x >= 0 && x <= 1 && y <= 0 && y <= 1) {
+  if (x >= 0 && x <= 1 && y >= 0 && y <= 1) {
     let i, j, k, v, f, h
 
     for (i = 0; i < width; i++) {

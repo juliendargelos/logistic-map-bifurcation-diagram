@@ -25,7 +25,7 @@
         keepBuffer: 500,
         updateWhenIdle: false,
         edgeBufferTiles: 10,
-        layers: [L.tileLayer('.netlify/functions/tile?x={x}&y={y}&z={z}')]
+        layers: [L.tileLayer('.netlify/functions/tile?x={x}&y={y}&z={z}&k={x}-{y}-{z}')]
       })
     </script>
   </body>

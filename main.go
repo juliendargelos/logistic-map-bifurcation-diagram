@@ -110,7 +110,7 @@ import (
   b64 "encoding/base64"
 )
 
-const iterations int = 20
+const iterations float64 = 20
 const start float64 = 0.25
 const width int = 256
 const height int = 256
@@ -124,19 +124,19 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
   yP := request.QueryStringParameters["y"]
   zP := request.QueryStringParameters["z"]
 
-  amplitude, err := strconv.ParseInt(zP, 10, 32)
-  amplitude = 1 / math.Pow(2, amplitude)
+  a, err := strconv.ParseInt(zP, 10, 32)
+  amplitude := 1 / math.Pow(2, float64(a))
 
-  scaledIterations := math.Min(50000, math.Max(500, iterations / math.Log(amplitude + 1)))
+  scaledIterations := int64(math.Min(50000, math.Max(500, iterations / math.Log(amplitude + 1))))
 
-  x, err = strconv.ParseInt(xP, 10, 32)
-  y, err = strconv.ParseInt(yP, 10, 32)
+  x, err := strconv.ParseInt(xP, 10, 32)
+  y, err := strconv.ParseInt(yP, 10, 32)
 
   x = x * amplitude
   y = y * amplitude
 
   img := image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{width, height}})
-  histogram := [width * height]float64
+  histogram := [width * height]float64{}
 
   if x >= 0 && x <= 1 && y >= 0 && y <= 1 {
     var v float64

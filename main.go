@@ -127,13 +127,13 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
   a, err := strconv.ParseInt(zP, 10, 32)
   amplitude := 1 / math.Pow(2, float64(a))
 
-  scaledIterations := int64(math.Min(50000, math.Max(500, iterations / math.Log(amplitude + 1))))
+  scaledIterations := int(math.Min(50000, math.Max(500, iterations / math.Log(amplitude + 1))))
 
-  x, err := strconv.ParseInt(xP, 10, 32)
-  y, err := strconv.ParseInt(yP, 10, 32)
+  xI, err := strconv.ParseInt(xP, 10, 32)
+  yI, err := strconv.ParseInt(yP, 10, 32)
 
-  x = x * amplitude
-  y = y * amplitude
+  x := float64(xI) * amplitude
+  y := float64(yI) * amplitude
 
   img := image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{width, height}})
   histogram := [width * height]float64{}
@@ -142,12 +142,12 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
     var v float64
     var k float64
     var ki int
-    var f int
-    var h float64
+    var f int64
+    var h int64
 
     for i := 0; i < width; i++ {
-      var values [height]int
-      rate := (i / (width - 1) * amplitude + x) * 3 + 1
+      var values [height]int64
+      rate := (float64(i) / (float64(width) - 1) * amplitude + x) * 3 + 1
       v = start
       f = 0
 
@@ -160,7 +160,7 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
         k = 1 - v
 
         if (k >= y && k <= y + amplitude) {
-          ki = math.Round((k - y) / amplitude * (height - 1))
+          ki = int(math.Round((k - y) / amplitude * (float64(height) - 1)))
           h = values[ki]
           values[ki] = h + 1
 
@@ -171,15 +171,15 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
       }
 
       for l, value := range values {
-        histogram[i + l * width] = value * f
+        histogram[i + l * width] = float64(value * f)
       }
     }
 
     for i, value := range histogram {
       if value != 0 {
-        value = value / height
-        py := math.Floor(i / width)
-        px :=  i - py * width
+        value = value / float64(height)
+        py := math.Floor(float64(i) / float64(width))
+        px := float64(i) - py * float64(width)
 
         img.Set(px, py, color.RGBA{
           math.Round(value * maximumColor[0] + (1 - value) * minimumColor[0]),

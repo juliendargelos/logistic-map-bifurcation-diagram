@@ -11,7 +11,7 @@ const server = http.createServer((request, response) => {
     return tileLambda({
       queryStringParameters: querystring.parse(url.query)
     }).then((result) => {
-      Object.entries(result).forEach(({ 0: header, 1: content}) => {
+      Object.entries(result.headers).forEach(({ 0: header, 1: content}) => {
         response.setHeader(header, content)
       })
 

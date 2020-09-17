@@ -1,17 +1,17 @@
 const { PNG } = require('pngjs')
 
-const iterations = 10
+const iterations = 20
 const start = 0.25
-const width = 512
-const height = 512
-const minimumColor = [255, 0, 255]
+const width = 256
+const height = 256
+const minimumColor = [255, 100, 255]
 const maximumColor = [0, 0, 255]
 const backgroundColor = [0, 0, 0]
 
 exports.handler = async ({ queryStringParameters }) => {
   let { x = '0', y = '0', z = '0' } = queryStringParameters
   const range = 1 / Math.pow(2, parseInt(z, 10))
-  const scaledIterations = iterations / range
+  const scaledIterations = Math.min(50000, Math.max(500, iterations / Math.log(range + 1)))
 
   x = parseInt(x, 10) * range
   y = parseInt(y, 10) * range
@@ -24,7 +24,7 @@ exports.handler = async ({ queryStringParameters }) => {
     let i, j, k, v, f, h
 
     for (i = 0; i < width; i++) {
-      const rate = (i / (width - 1) * range + x) * 4
+      const rate = (i / (width - 1) * range + x) * 3 + 1
       const values = new Array(height).fill(0)
 
       for (j = 0, v = start; j < 1000; j++) {
@@ -44,7 +44,7 @@ exports.handler = async ({ queryStringParameters }) => {
       }
 
       values.forEach((value, l) => {
-        histogram[i + l * width] = Math.log(value + 1) * f
+        histogram[i + l * width] = value * f
       })
     }
   }
@@ -61,7 +61,11 @@ exports.handler = async ({ queryStringParameters }) => {
     data[i + 3] = 255
 
     if (value) {
-      value /= maximum
+      // value = Math.log(value / height * 0.9 + 0.1) / 2 + 0.5
+      // value = Math.log(value + 1)
+      //
+
+      value /= height
 
       for (var s = 0; s < smoothing; s++) {
         value = Math.min(1, -Math.log((1 - value) * 0.9 + 0.1))
@@ -82,7 +86,10 @@ exports.handler = async ({ queryStringParameters }) => {
     image.on('end', () => resolve({
       statusCode: 200,
       isBase64Encoded: true,
-      headers: { 'content-type': 'image/png' },
+      headers: {
+        'content-type': 'image/png',
+        'cache-control': 'max-age=31536000'
+      },
       body: Buffer.concat(chunks).toString('base64')
     }))
 

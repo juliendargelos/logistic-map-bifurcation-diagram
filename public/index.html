@@ -20,10 +20,11 @@
         center: [2, 2],
         zoom: 2,
         zoomSnap: 0,
+        detectRetina: true,
         // maxBounds: [[0, 0], [4, 1]],
-        keepBuffer: 10,
+        keepBuffer: 500,
         updateWhenIdle: false,
-        edgeBufferTiles: 5,
+        edgeBufferTiles: 10,
         layers: [L.tileLayer('.netlify/functions/tile?x={x}&y={y}&z={z}')]
       })
     </script>

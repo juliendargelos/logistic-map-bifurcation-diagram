@@ -111,7 +111,7 @@ import (
   b64 "encoding/base64"
 )
 
-const iterations float64 = 50
+const iterations float64 = 100
 const start float64 = 0.25
 const width int = 1024
 const height int = 1024

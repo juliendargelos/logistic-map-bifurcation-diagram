@@ -102,16 +102,106 @@ package main
 import (
   "github.com/aws/aws-lambda-go/events"
   "github.com/aws/aws-lambda-go/lambda"
+  "strconv"
+  "math"
+  "image"
+  "image/png"
+  "image/color"
+  b64 "encoding/base64"
 )
+
+const iterations int = 20
+const start float = 0.25
+const width int = 256
+const height int = 256
+
+var minimumColor [...]int{255, 100, 255}
+var maximumColor [...]int{0, 0, 255}
+var backgroundColor [...]int{0, 0, 0}
 
 func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
   x := request.QueryStringParameters["x"]
   y := request.QueryStringParameters["y"]
   z := request.QueryStringParameters["z"]
+  amplitude := 1 / math.Pow(2, strconv.ParseInt(z, 10, 32))
+  scaledIterations := math.Min(50000, math.Max(500, iterations / Math.log(amplitude + 1)))
+
+  x := strconv.ParseInt(x, 10, 32) * amplitude
+  y := strconv.ParseInt(y, 10, 32) * amplitude
+
+  img := image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{width, height}})
+  histogram := [width * height]float
+
+  if x >= 0 && x <= 1 && y >= 0 && y <= 1 {
+    var v float
+    var k float
+    var ki int
+    var f int
+    var h float
+
+    for i := 0; i < width; i++ {
+      var values [height]int
+      rate := (i / (width - 1) * amplitude + x) * 3 + 1
+      v := start
+      f := 0
+
+      for j := 0; j < 1000; j++ {
+        v := v * rate * (1 - v)
+      }
+
+      for j := 0; j < scaledIterations; j++ {
+        v := v * rate * (1 - v)
+        k := 1 - v
+
+        if (k >= y && k <= y + amplitude) {
+          ki := math.Round((k - y) / amplitude * (height - 1))
+          h := values[ki]
+          values[ki] = h + 1
+
+          if !h {
+            f++
+          }
+        }
+      }
+
+      for l, value := range values {
+        histogram[i + l * width] = value * f
+      }
+    }
+
+    for i, value := range histogram {
+      if value != 0 {
+        value := value / height
+        py := math.Floor(i / width)
+        px :=  i - py * width
+
+        img.Set(px, py, color.RGBA{
+          math.Round(value * maximumColor[0] + (1 - value) * minimumColor[0]),
+          math.Round(value * maximumColor[1] + (1 - value) * minimumColor[1]),
+          math.Round(value * maximumColor[2] + (1 - value) * minimumColor[2]),
+          0xff
+        })
+      } else {
+        img.Set(px, py, color.RGBA{
+          backgroundColor[0],
+          backgroundColor[1],
+          backgroundColor[2],
+          0xff
+        })
+      }
+    }
+  }
+
+  buffer := new(bytes.Buffer)
+  png.Encode(buffer, img)
 
   return &events.APIGatewayProxyResponse{
+    IsBase64Encoded: true,
     StatusCode: 200,
-    Body: x + "," + y + "," + z,
+    Headers: map[string]string{
+      "content-type": "image.png",
+    },
+    Body: b64.StdEncoding.EncodeToString(buf.Bytes()),
   }, nil
 }
 

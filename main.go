@@ -115,11 +115,11 @@ const start float = 0.25
 const width int = 256
 const height int = 256
 
-minimumColor := [...]int{255, 100, 255}
-maximumColor := [...]int{0, 0, 255}
-backgroundColor := [...]int{0, 0, 0}
-
 func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
+  minimumColor := [...]int{255, 100, 255}
+  maximumColor := [...]int{0, 0, 255}
+  backgroundColor := [...]int{0, 0, 0}
+
   x := request.QueryStringParameters["x"]
   y := request.QueryStringParameters["y"]
   z := request.QueryStringParameters["z"]

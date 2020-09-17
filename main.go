@@ -120,17 +120,17 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
   maximumColor := [...]int{0, 0, 255}
   backgroundColor := [...]int{0, 0, 0}
 
-  x := request.QueryStringParameters["x"]
-  y := request.QueryStringParameters["y"]
-  z := request.QueryStringParameters["z"]
+  xP := request.QueryStringParameters["x"]
+  yP := request.QueryStringParameters["y"]
+  zP := request.QueryStringParameters["z"]
 
-  amplitude, err := math.Pow(2, strconv.ParseInt(z, 10, 32))
-  amplitude = 1 / amplitude
+  amplitude, err := strconv.ParseInt(zP, 10, 32)
+  amplitude = 1 / math.Pow(2, amplitude)
 
   scaledIterations := math.Min(50000, math.Max(500, iterations / math.Log(amplitude + 1)))
 
-  x, err = strconv.ParseInt(x, 10, 32)
-  y, err = strconv.ParseInt(y, 10, 32)
+  x, err = strconv.ParseInt(xP, 10, 32)
+  y, err = strconv.ParseInt(yP, 10, 32)
 
   x = x * amplitude
   y = y * amplitude

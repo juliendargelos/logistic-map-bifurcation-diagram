@@ -107,6 +107,7 @@ import (
   "image"
   "image/png"
   "image/color"
+  "bytes"
   b64 "encoding/base64"
 )
 
@@ -118,19 +119,19 @@ const height int = 256
 func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
   minimumColor := [...]float64{255, 100, 255}
   maximumColor := [...]float64{0, 0, 255}
-  backgroundColor := [...]uint32{0, 0, 0}
+  backgroundColor := [...]uint8{0, 0, 0}
 
   xP := request.QueryStringParameters["x"]
   yP := request.QueryStringParameters["y"]
   zP := request.QueryStringParameters["z"]
 
-  a, err := strconv.ParseInt(zP, 10, 32)
+  a, _ := strconv.ParseInt(zP, 10, 32)
   amplitude := 1 / math.Pow(2, float64(a))
 
   scaledIterations := int(math.Min(50000, math.Max(500, iterations / math.Log(amplitude + 1))))
 
-  xI, err := strconv.ParseInt(xP, 10, 32)
-  yI, err := strconv.ParseInt(yP, 10, 32)
+  xI, _ := strconv.ParseInt(xP, 10, 32)
+  yI, _ := strconv.ParseInt(yP, 10, 32)
 
   x := float64(xI) * amplitude
   y := float64(yI) * amplitude
@@ -176,15 +177,16 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
     }
 
     for i, value := range histogram {
+      py := int(math.Floor(float64(i) / float64(width)))
+      px := i - py * width
+
       if value != 0 {
         value = value / float64(height)
-        py := math.Floor(float64(i) / float64(width))
-        px := float64(i) - py * float64(width)
 
         img.Set(px, py, color.RGBA{
-          uint32(math.Round(value * maximumColor[0] + (1 - value) * minimumColor[0])),
-          uint32(math.Round(value * maximumColor[1] + (1 - value) * minimumColor[1])),
-          uint32(math.Round(value * maximumColor[2] + (1 - value) * minimumColor[2])),
+          uint8(math.Round(value * maximumColor[0] + (1 - value) * minimumColor[0])),
+          uint8(math.Round(value * maximumColor[1] + (1 - value) * minimumColor[1])),
+          uint8(math.Round(value * maximumColor[2] + (1 - value) * minimumColor[2])),
           0xff,
         })
       } else {
@@ -207,7 +209,7 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
     Headers: map[string]string{
       "content-type": "image.png",
     },
-    Body: b64.StdEncoding.EncodeToString(buf.Bytes()),
+    Body: b64.StdEncoding.EncodeToString(buffer.Bytes()),
   }, nil
 }
 

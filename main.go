@@ -111,7 +111,7 @@ import (
 )
 
 const iterations int = 20
-const start float = 0.25
+const start float64 = 0.25
 const width int = 256
 const height int = 256
 
@@ -123,21 +123,27 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
   x := request.QueryStringParameters["x"]
   y := request.QueryStringParameters["y"]
   z := request.QueryStringParameters["z"]
-  amplitude := 1 / math.Pow(2, strconv.ParseInt(z, 10, 32))
-  scaledIterations := math.Min(50000, math.Max(500, iterations / Math.log(amplitude + 1)))
 
-  x = strconv.ParseInt(x, 10, 32) * amplitude
-  y = strconv.ParseInt(y, 10, 32) * amplitude
+  amplitude, err := math.Pow(2, strconv.ParseInt(z, 10, 32))
+  amplitude = 1 / amplitude
+
+  scaledIterations := math.Min(50000, math.Max(500, iterations / math.Log(amplitude + 1)))
+
+  x, err = strconv.ParseInt(x, 10, 32)
+  y, err = strconv.ParseInt(y, 10, 32)
+
+  x = x * amplitude
+  y = y * amplitude
 
   img := image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{width, height}})
-  histogram := [width * height]float
+  histogram := [width * height]float64
 
   if x >= 0 && x <= 1 && y >= 0 && y <= 1 {
-    var v float
-    var k float
+    var v float64
+    var k float64
     var ki int
     var f int
-    var h float
+    var h float64
 
     for i := 0; i < width; i++ {
       var values [height]int

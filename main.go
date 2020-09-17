@@ -60,7 +60,7 @@
 
 //     data[i + 3] = 255
 
-//     if (value) {
+//     if (value) {
 //       // value = Math.log(value / height * 0.9 + 0.1) / 2 + 0.5
 //       // value = Math.log(value + 1)
 //       //
@@ -115,19 +115,19 @@ const start float = 0.25
 const width int = 256
 const height int = 256
 
-var minimumColor [...]int{255, 100, 255}
-var maximumColor [...]int{0, 0, 255}
-var backgroundColor [...]int{0, 0, 0}
-
 func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
+  var minimumColor [...]int{255, 100, 255}
+  var maximumColor [...]int{0, 0, 255}
+  var backgroundColor [...]int{0, 0, 0}
+
   x := request.QueryStringParameters["x"]
   y := request.QueryStringParameters["y"]
   z := request.QueryStringParameters["z"]
   amplitude := 1 / math.Pow(2, strconv.ParseInt(z, 10, 32))
   scaledIterations := math.Min(50000, math.Max(500, iterations / Math.log(amplitude + 1)))
 
-  x := strconv.ParseInt(x, 10, 32) * amplitude
-  y := strconv.ParseInt(y, 10, 32) * amplitude
+  x = strconv.ParseInt(x, 10, 32) * amplitude
+  y = strconv.ParseInt(y, 10, 32) * amplitude
 
   img := image.NewRGBA(image.Rectangle{image.Point{0, 0}, image.Point{width, height}})
   histogram := [width * height]float
@@ -142,20 +142,20 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
     for i := 0; i < width; i++ {
       var values [height]int
       rate := (i / (width - 1) * amplitude + x) * 3 + 1
-      v := start
-      f := 0
+      v = start
+      f = 0
 
       for j := 0; j < 1000; j++ {
-        v := v * rate * (1 - v)
+        v = v * rate * (1 - v)
       }
 
       for j := 0; j < scaledIterations; j++ {
-        v := v * rate * (1 - v)
-        k := 1 - v
+        v = v * rate * (1 - v)
+        k = 1 - v
 
         if (k >= y && k <= y + amplitude) {
-          ki := math.Round((k - y) / amplitude * (height - 1))
-          h := values[ki]
+          ki = math.Round((k - y) / amplitude * (height - 1))
+          h = values[ki]
           values[ki] = h + 1
 
           if !h {
@@ -170,8 +170,8 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
     }
 
     for i, value := range histogram {
-      if value != 0 {
-        value := value / height
+      if value != 0 {
+        value = value / height
         py := math.Floor(i / width)
         px :=  i - py * width
 
@@ -179,14 +179,14 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
           math.Round(value * maximumColor[0] + (1 - value) * minimumColor[0]),
           math.Round(value * maximumColor[1] + (1 - value) * minimumColor[1]),
           math.Round(value * maximumColor[2] + (1 - value) * minimumColor[2]),
-          0xff
+          0xff,
         })
       } else {
         img.Set(px, py, color.RGBA{
           backgroundColor[0],
           backgroundColor[1],
           backgroundColor[2],
-          0xff
+          0xff,
         })
       }
     }

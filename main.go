@@ -111,7 +111,7 @@ import (
   b64 "encoding/base64"
 )
 
-const iterations float64 = 20
+const iterations float64 = 50
 const start float64 = 0.25
 const width int = 1024
 const height int = 1024
@@ -128,7 +128,7 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
   a, _ := strconv.ParseInt(zP, 10, 32)
   amplitude := 1 / math.Pow(2, float64(a))
 
-  scaledIterations := int(math.Min(50000, math.Max(500, iterations / math.Log(amplitude + 1))))
+  scaledIterations := int(math.Min(100000, math.Max(500, iterations / math.Log(amplitude + 1))))
 
   xI, _ := strconv.ParseInt(xP, 10, 32)
   yI, _ := strconv.ParseInt(yP, 10, 32)

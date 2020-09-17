@@ -116,9 +116,9 @@ const width int = 256
 const height int = 256
 
 func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-  minimumColor := [...]int{255, 100, 255}
-  maximumColor := [...]int{0, 0, 255}
-  backgroundColor := [...]int{0, 0, 0}
+  minimumColor := [...]float64{255, 100, 255}
+  maximumColor := [...]float64{0, 0, 255}
+  backgroundColor := [...]uint32{0, 0, 0}
 
   xP := request.QueryStringParameters["x"]
   yP := request.QueryStringParameters["y"]
@@ -164,7 +164,7 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
           h = values[ki]
           values[ki] = h + 1
 
-          if !h {
+          if h == 0 {
             f++
           }
         }
@@ -182,9 +182,9 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
         px := float64(i) - py * float64(width)
 
         img.Set(px, py, color.RGBA{
-          math.Round(value * maximumColor[0] + (1 - value) * minimumColor[0]),
-          math.Round(value * maximumColor[1] + (1 - value) * minimumColor[1]),
-          math.Round(value * maximumColor[2] + (1 - value) * minimumColor[2]),
+          uint32(math.Round(value * maximumColor[0] + (1 - value) * minimumColor[0])),
+          uint32(math.Round(value * maximumColor[1] + (1 - value) * minimumColor[1])),
+          uint32(math.Round(value * maximumColor[2] + (1 - value) * minimumColor[2])),
           0xff,
         })
       } else {

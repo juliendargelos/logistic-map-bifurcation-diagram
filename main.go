@@ -113,8 +113,8 @@ import (
 
 const iterations float64 = 20
 const start float64 = 0.25
-const width int = 256
-const height int = 256
+const width int = 1024
+const height int = 1024
 
 func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
   minimumColor := [...]float64{255, 100, 255}

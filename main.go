@@ -105,9 +105,9 @@ import (
 )
 
 func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-  x := request.QueryParameters["x"]
-  y := request.QueryParameters["y"]
-  z := request.QueryParameters["z"]
+  x := request.QueryStringParameters["x"]
+  y := request.QueryStringParameters["y"]
+  z := request.QueryStringParameters["z"]
 
   return &events.APIGatewayProxyResponse{
     StatusCode: 200,
